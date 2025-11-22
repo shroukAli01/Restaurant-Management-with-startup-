@@ -8,14 +8,17 @@ class Node
 private :
 	T item; // A data item
 	Node<T>* next; // Pointer to next node
+	Node<T>* prev; // Pointer to previous node
 public :
 	Node();
 	Node( const T & r_Item);	//passing by const ref.
 	Node( const T & r_Item, Node<T>* nextNodePtr);
 	void setItem( const T & r_Item);
 	void setNext(Node<T>* nextNodePtr);
+	void setPrev(Node<T>* prevNodePtr);
 	T getItem() const ;
 	Node<T>* getNext() const ;
+	Node<T>* getPrev() const;
 }; // end Node
 
 
@@ -51,6 +54,12 @@ void Node<T>::setNext(Node<T>* nextNodePtr)
 } 
 
 template < typename T>
+void Node<T>::setPrev(Node<T>* prevNodePtr)
+{
+	prev = prevNodePtr;
+}
+
+template < typename T>
 T Node<T>::getItem() const
 {
 	return item;
@@ -61,5 +70,11 @@ Node<T>* Node<T>::getNext() const
 {
 	return next;
 } 
+
+template < typename T>
+Node<T>* Node<T>::getPrev() const
+{
+	return prev;
+}
 
 #endif
