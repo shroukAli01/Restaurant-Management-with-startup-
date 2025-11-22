@@ -9,24 +9,24 @@ class Cook
 private:
     int ID;
     ORD_TYPE type;      // (V/N/V)
-    int speed;          
+    int speed;
 
-  
+
     int BO;                 // Break Order count
-    int BreakDuration;      
-    int BreakRemaining;     
+    int BreakDuration;
+    int BreakRemaining;
     int OrdersSinceBreak;
 
     bool Available;
 
-    Order* CurrentOrder;    
-    int RemainingTime;      
+    Order* CurrentOrder;
+    int RemainingTime;
 
 public:
 
     // Constructor 
     Cook(int id = 0, ORD_TYPE t = TYPE_NRM, int speed = 0,
-         int bo = 0, int breakDur = 0);
+        int bo = 0, int breakDur = 0);
 
     //Destructor 
     ~Cook();
@@ -62,6 +62,7 @@ public:
     bool IsBusy() const;
 
     void OrderAssigned();        // for BO counter
-    void UpdateCooking();        
+    void UpdateCooking();
 };
+
 
