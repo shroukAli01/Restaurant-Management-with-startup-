@@ -1,104 +1,120 @@
 #include "Cook.h"
 
-
-Cook::Cook()
+//  Constructor 
+Cook::Cook(int id, ORD_TYPE t, int spd, int bo, int breakDur)
 {
+    ID = id;
+    type = t;
+    speed = spd;
+
+    BO = bo;
+    BreakDuration = breakDur;
+
+    BreakRemaining = 0;
+    OrdersSinceBreak = 0;
+
+    Available = true;
+
+    CurrentOrder = nullptr;
+    RemainingTime = 0;
 }
 
-
+//  Destructor 
 Cook::~Cook()
 {
+   
 }
 
+// Setters 
+void Cook::setID(int id) { ID = id; }
+void Cook::setType(ORD_TYPE t) { type = t; }
+void Cook::SetSpeed(int s) { speed = s; }
+void Cook::SetBO(int bo) { BO = bo; }
+void Cook::SetBreakDuration(int bd) { BreakDuration = bd; }
 
-int Cook::GetID() const
+//  Getters
+int Cook::GetID() const { return ID; }
+ORD_TYPE Cook::GetType() const { return type; }
+int Cook::GetSpeed() const { return speed; }
+int Cook::GetBO() const { return BO; }
+int Cook::GetBreakDuration() const { return BreakDuration; }
+int Cook::GetBreakRemaining() const { return BreakRemaining; }
+
+bool Cook::IsAvailable() const { return Available; }
+void Cook::SetAvailable(bool a) { Available = a; }
+
+//  Break Handling 
+void Cook::StartBreak()
 {
-	return ID;
+    Available = false;
+    BreakRemaining = BreakDuration;
 }
 
-
-ORD_TYPE Cook::GetType() const
+void Cook::UpdateBreak()
 {
-	return type;
+    if (BreakRemaining > 0)
+    {
+        BreakRemaining--;
+
+        if (BreakRemaining == 0)
+            ResetBreak();
+    }
 }
 
-
-void Cook::setID(int id)
+bool Cook::InBreak() const
 {
-	ID = id;
+    return BreakRemaining > 0;
 }
 
-void Cook::setType(ORD_TYPE t)
+void Cook::ResetBreak()
 {
-	type = t;
+    BreakRemaining = 0;
+    OrdersSinceBreak = 0;
+    Available = true;
 }
-#pragma once
 
-#include "..\Defs.h"
-
-// Forward declaration (علشان Order لسه هتتعامل في Phase 2)
-class Order;
-
-class Cook
+// ---------- Order Handling ----------
+void Cook::AssignOrder(Order* o, int prepTime)
 {
-private:
-    int ID;
-    ORD_TYPE type;      // (VIP/Normal/Vegan)
-    int speed;          // dishes per timestep
+    CurrentOrder = o;
+    RemainingTime = prepTime;
+    Available = false;
 
-    // ---- Additions from your Cook.h ----
-    int BO;                 // Break Order count
-    int BreakDuration;      // total break duration
-    int BreakRemaining;     
-    int OrdersSinceBreak;
+    OrderAssigned();
+}
 
-    bool Available;
+void Cook::FreeOrder()
+{
+    CurrentOrder = nullptr;
+    RemainingTime = 0;
+    Available = true;
+}
 
-    Order* CurrentOrder;    // pointer to assigned order
-    int RemainingTime;      // time left to finish the order
+Order* Cook::GetCurrentOrder() const
+{
+    return CurrentOrder;
+}
 
-public:
+bool Cook::IsBusy() const
+{
+    return CurrentOrder != nullptr;
+}
 
-    // Constructor
-    Cook(int id = 0, ORD_TYPE t = TYPE_NRM, int speed = 0,
-         int bo = 0, int breakDur = 0);
+void Cook::OrderAssigned()
+{
+    OrdersSinceBreak++;
 
-    //Destructor
-    ~Cook();
+    if (OrdersSinceBreak >= BO)
+        StartBreak();
+}
 
-    //Setters
-    void setID(int id);
-    void setType(ORD_TYPE t);
-    void SetSpeed(int s);
-    void SetBO(int bo);
-    void SetBreakDuration(int bd);
+void Cook::UpdateCooking()
+{
+    if (RemainingTime > 0)
+    {
+        RemainingTime--;
 
-    //  Getters 
-	int GetID() const;
-    ORD_TYPE GetType() const;
-    int GetSpeed() const;
-    int GetBO() const;
-    int GetBreakDuration() const;
-    int GetBreakRemaining() const;
-
-    bool IsAvailable() const;
-    void SetAvailable(bool a);
-
-    //  Break Handling 
-    void StartBreak();
-    void UpdateBreak();
-    bool InBreak() const;
-    void ResetBreak();
-
-    //Order Handling 
-    void AssignOrder(Order* o, int prepTime);
-    void FreeOrder();
-    Order* GetCurrentOrder() const;
-    bool IsBusy() const;
-
-    void OrderAssigned();        // for BO counter
-    void UpdateCooking();        // decrease remaining time
-};
-
-
-
+        if (RemainingTime == 0)
+            FreeOrder();
+    }
+}
