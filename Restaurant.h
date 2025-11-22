@@ -5,11 +5,11 @@
 #include "..\CMUgraphicsLib\CMUgraphics.h"
 #include "..\GUI\GUI.h"
 #include "..\Generic_DS\Queue.h"
+#include "..\Generic_DS\LinkedList.h"
 #include "..\Events\Event.h"
 
-
 #include "Order.h"
-
+#include "Cook.h"
 // it is the maestro of the project
 class Restaurant  
 {	
@@ -23,39 +23,57 @@ private:
 	Queue<Order*> DEMO_Queue;	//Important: This is just for demo
 	/// ==>
 	
-	
-	
-	//
-	// TODO: Add More Data Members As Needed
-	//
+    // waiting list 
+    LinkedList<Order*> WaitingNormal;
+    LinkedList<Order*> WaitingVegan;
+    PriorityQueue<Order*> WaitingVIP;   
+
+    LinkedList<Order*> InService;
+    LinkedList<Order*> Finished;
 
 public:
-	
-	Restaurant();
-	~Restaurant();
-	
-	void ExecuteEvents(int TimeStep);	//executes all events at current timestep
-	void RunSimulation();
+    Restaurant();
+    ~Restaurant();
 
-	
+    
+    void RunSimulation();
+    void SimpleSimulator();
+    void ExecuteEvents(int CurrentTimeStep);
 
+    // File loading
+    void LoadFile();
 
-	void FillDrawingList();
+    // move between lists
+    void MoveOneOrderToInService();
+    void MoveOneOrderToFinished();
 
-	//
-	// TODO: Add More Member Functions As Needed
-	//
-
-
-/// ===================    DEMO-related functions. Should be removed in phases 1&2   ================= 
-
-	void Just_A_Demo();	//just to show a demo and should be removed in phase1 1 & 2
-	void AddtoDemoQueue(Order* po);	//adds an order to the demo queue
-
-/// ================================================================================================== 
-
-
-
+    // Fill GUI list
+    void FillDrawingList();
 };
 
-#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
