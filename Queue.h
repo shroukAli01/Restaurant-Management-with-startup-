@@ -58,6 +58,7 @@ public :
 	bool dequeue(T& frntEntry);  
 	bool peekFront(T& frntEntry)  const;
 	T* toArray(int& count);	//returns array of T (array if items)
+	void Print();
 	~Queue();
 };
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +208,22 @@ T* Queue<T>::toArray(int& count)
 		p = p->getNext();
 	}
 	return Arr;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+/*
+Function: Print
+prints all items in the Queue
+
+*/
+
+template <typename T>
+void Queue<T>::Print() {
+	Node<T>* current = front;
+	while (current != nullptr) {
+		cout << current->getValue() << endl;
+		current = current->getNext();
+	}
 }
 
 #endif
